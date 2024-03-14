@@ -1,5 +1,4 @@
 #include "sonia_BehaviorTree/MissionSwitchStatus.hpp"
-
 using std::placeholders::_1;
 
 MissionSwitchStatus::MissionSwitchStatus(const std::string &name, const BT::NodeConfig &config)
@@ -7,7 +6,7 @@ MissionSwitchStatus::MissionSwitchStatus(const std::string &name, const BT::Node
 {
     _internal_node = rclcpp::Node::make_shared("bt_mission_status");
     _mission_switch_sub = _internal_node->create_subscription<sonia_common_ros2::msg::MissionStatus>(
-        "mission_switch_status", 10, std::bind(&MissionSwitchStatus::updateStatus, this, _1));
+        "/mission/tx", 10, std::bind(&MissionSwitchStatus::updateStatus, this, _1));
 }
 
 void MissionSwitchStatus::updateStatus(const sonia_common_ros2::msg::MissionStatus &msg)

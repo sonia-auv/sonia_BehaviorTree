@@ -6,7 +6,6 @@
 #include "behaviortree_cpp/loggers/bt_observer.h"
 #include "sonia_BehaviorTree/DropperActionNode.hpp"
 #include "sonia_BehaviorTree/MissionSwitchStatus.hpp"
-#include "sonia_BehaviorTree/Approachobject.hpp"
 
 using namespace BT;
 
@@ -16,6 +15,7 @@ int main(int argc, char const *argv[])
     {
         return EXIT_FAILURE;
     }
+    printf("LEN argc: %d\n", argc);
     BT::BehaviorTreeFactory factory;
 
     factory.registerNodeType<MissionSwitchStatus>("MissionSwitchStatus");

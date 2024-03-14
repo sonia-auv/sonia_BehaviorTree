@@ -16,6 +16,7 @@ public:
 
     BT::NodeStatus tick() override
     {
+        rclcpp::spin_some(_internal_node);
         if (_mission_status)
         {
             return BT::NodeStatus::SUCCESS;
