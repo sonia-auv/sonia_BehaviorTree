@@ -14,14 +14,33 @@ public:
 
     static BT::PortsList providedPorts()
     {
-        // This action has a single input port called "message"
-        return {};
+        // Options for 'side' are 'port_side' or 'starboard'
+        return {BT::InputPort<std::string>("side")};
     }
 
     BT::NodeStatus tick() override
     {
         auto request = std::make_shared<sonia_common_ros2::srv::DropperService::Request>();
-        request->side = sonia_common_ros2::srv::DropperService::Request::PORT_SIDE;
+        BT::Expected<std::string> msg = getInput<std::string>("side");
+        if (!msg)
+        {
+            throw BT::RuntimeError("missing required input [side]: ",
+                                   msg.error());
+        }
+        if (msg.value() == "port_side")
+        {
+            request->side = sonia_common_ros2::srv::DropperService::Request::PORT_SIDE;
+        }
+        else if (msg.value() == "starboard")
+        {
+            request->side = sonia_common_ros2::srv::DropperService::Request::STARBOARD;
+        }
+        else
+        {
+            throw BT::RuntimeError("Bad required input [side]: ",
+                                   msg.error());
+        }
+        RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Dropper Side: %d", request->side);
 
         while (!_dropper_client->wait_for_service(1s))
         {
@@ -37,6 +56,7 @@ public:
         // Wait for the result.
         if (rclcpp::spin_until_future_complete(_internal_node, result) == rclcpp::FutureReturnCode::SUCCESS)
         {
+            RCLCPP_INFO(rclcpp::get_logger("rclcpp"), "Dropper RESULT: %d\n", result.get()->result);
             return BT::NodeStatus::SUCCESS;
         }
         return BT::NodeStatus::FAILURE;

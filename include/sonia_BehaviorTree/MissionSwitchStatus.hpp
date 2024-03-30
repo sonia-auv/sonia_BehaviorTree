@@ -10,7 +10,6 @@ public:
 
     static BT::PortsList providedPorts()
     {
-        // This action has a single input port called "message"
         return {};
     }
 
